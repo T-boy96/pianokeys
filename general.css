@@ -1,0 +1,73 @@
+body {
+    text-align: center;
+    font-size: small;
+    font-weight: 400;
+    background-color: rgb(13, 43, 5);
+    padding-top: 50px;
+}
+
+#piano {
+    margin: auto;
+    width: max-content;
+    height: max-content;
+}
+
+#buttons {
+    margin: auto;
+    margin-top: 200px;
+    width: max-content;
+}
+
+#whiteWithBlacks {
+    margin: auto;
+    width: max-content;
+    height: max-content;
+    align-content: center;
+}
+
+#whitebottom {
+    margin: auto;
+    width: max-content;
+    height: max-content;
+    align-content: center;
+    margin-top: 101px;
+}
+
+.white {
+    width: 16px;
+    height: 103px;
+    float: left;
+    background-color: white;
+    border-left: 1px solid rgb(37, 37, 37);
+    border-right: 1px solid white;
+    border-bottom: none;
+    color: black;
+    text-align: center;
+    margin-left: 1px;
+    position: relative;
+}
+
+.whitebot {
+    width: 22.5px;
+    height: 50px;
+    float: left;
+    background-color: white;
+    border-left: 1px solid rgb(37, 37, 37);
+    border-right: 1px solid white;
+    border-top: none;
+    margin-top: -1px;
+    margin-left: 1px;
+    position: relative;
+}
+
+.black {
+    width: 11px;
+    height: 101px;
+    background-color: black;
+    border-left: 1px solid rgb(37, 37, 37);
+    color: white;
+    float: left;
+    text-align: center;
+    margin-left: 1px;
+    position: relative;
+}
