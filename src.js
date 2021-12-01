@@ -3,8 +3,6 @@ function $(id){
 }
 
 var body = document.querySelector('.body');
-var lbutton = $('buttons').querySelector('shiftl');
-var rbutton = $('buttons').querySelector('shiftr');
 
 var GRAND_PIANO = 88;
 var keys = [GRAND_PIANO];
@@ -50,18 +48,40 @@ function lshift(){
     generateKeys(MIN,MAX);
 }
 
-function action(e,MIDI){
-    if (e.keyCode === 37 || e.target.id === 'shiftl') lshift();
-    else if (e.keyCode === 39 ||e.target.id === 'shiftr') rshift();
-    else if ($(e.key) !== null){
-        let note_pressed = $(e.key).parentElement.id;
-        Tone.loaded().then(() => {
-            MIDI.triggerAttackRelease([note_pressed], 2);
-        })
+function actionSound(note_pressed,MIDI){
+    Tone.loaded().then(() => {
+        
+    })
+}
+
+function actionKeydownDisplay(note_pressed){
+    var note = $(note_pressed);
+    if(note.classList.contains('black')){
+        note.style.backgroundColor = 'lightblue';
+        note.style.color = 'lightblue';    
+    }
+    if(note.classList.contains('whitebot')){
+        note.style.backgroundColor = 'lightblue';
+        note.style.color = 'lightblue';
+        $(note_pressed+"w").style.backgroundColor = 'lightblue'; 
+        $(note_pressed+"w").style.color = 'lightblue';  
     }
 }
 
-
+function actionKeyupDisplay(note_pressed){
+    var note = $(note_pressed);
+    if(note.classList.contains('black')){
+        note.style.backgroundColor = 'black';
+        note.style.color = 'white';    
+    }
+    if(note.classList.contains('whitebot')){
+        note.style.backgroundColor = 'white';
+        note.style.color = 'black';
+        $(note_pressed+"w").style.backgroundColor = 'white'; 
+        $(note_pressed+"w").style.color = 'black';  
+    }
+    
+}
 
 
 function generateKeys(MIN, MAX) {
@@ -71,8 +91,9 @@ function generateKeys(MIN, MAX) {
     
     for(let i = 1; i <= GRAND_PIANO; i++) {
         let div = document.createElement('div');
-        div.setAttribute('id',full_keyboard[i]);
+        
         if(blacks.includes(i)) {
+            div.setAttribute('id',full_keyboard[i]);
             div.setAttribute('class','black');
             div.setAttribute('style', 'horizontal-align:middle');
             if(MIN < i && i < MAX){
@@ -85,6 +106,7 @@ function generateKeys(MIN, MAX) {
             }
         }
         else{
+            div.setAttribute('id',full_keyboard[i] + "w");
             div.setAttribute('class','white');
             if(i === 1){
                 div.setAttribute('style', 'margin-left:-1px');
@@ -200,11 +222,49 @@ window.onload = function(){
     initVariables();
     generateNotes();
     generateKeys(MIN, MAX);
+
     
+    var time_dist = Tone.now();
+    var keyup_time = time_dist;
+    let note_before = '';
     body.addEventListener('keydown', e => {
-        action(e,MIDI);
+        if(e.keyCode === 37) lshift();
+        else if(e.keyCode === 39) rshift();
+
+        else if ($(e.key) !== null) {
+            let note_pressed = $(e.key).parentElement.id;
+
+            if ( note_before === note_pressed && (Tone.now() - keyup_time) > (Tone.now() - time_dist)) {
+                return;
+            }else if ( note_before === note_pressed && (Tone.now() - keyup_time) < (Tone.now() - time_dist)){
+                    Tone.loaded().then(() =>{
+                        MIDI.triggerAttackRelease([note_pressed], 2);
+                        actionKeydownDisplay(note_pressed);
+                        time_dist = Tone.now();
+                        note_before = note_pressed;
+                    });
+            } else if(note_before !== note_pressed) {
+                Tone.loaded().then(() =>{
+                    MIDI.triggerAttackRelease([note_pressed], 2);
+                    actionKeydownDisplay(note_pressed);
+                });
+                time_dist = Tone.now();
+                note_before = note_pressed;
+            }
+        }
     });
+
+
+    body.addEventListener('keyup',e => {
+        if ($(e.key) !== null){
+            keyup_time = Tone.now();
+            let note_pressed = $(e.key).parentElement.id;
+            actionKeyupDisplay(note_pressed);
+        }
+    });
+    
     body.addEventListener('click', e=> {
-        action(e);
+        if (e.target.id === 'shiftl') lshift();
+        else if(e.target.id === 'shiftr') rshift();
     });
 }
