@@ -1,9 +1,8 @@
 # pianokeys
 
-Simple javascript keyboard piano using Tone.js
-
 ![thumbnail](./thumbnail.png)
 
+Simple javascript keyboard piano using Tone.js
 ## References
 
 - Tone js installation guide at: https://github.com/Tonejs/Tone.js
