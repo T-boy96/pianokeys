@@ -13,8 +13,10 @@ Simple javascript keyboard piano using Tone.js
 - you have to find source path to Tone.js on your computer.
 - the characters that indicate pressable notes may differ from the ones on your keyboard.
 
-### Plans:
+### TODO:
 
 - make it more user friendly
 - make changes in appearance
 - make optional sound effects
+- make a sustain
+- make sheet music
