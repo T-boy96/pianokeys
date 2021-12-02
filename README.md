@@ -6,6 +6,7 @@ Simple javascript keyboard piano using Tone.js
 ## References
 
 - Tone js installation guide at: https://github.com/Tonejs/Tone.js
+- XAMPP (free and open-source cross-platform web server solution stack package) : https://www.apachefriends.org/index.html
 - inspiration and MP3 samples from: https://www.onlinepianist.com/virtual-piano
 
 ### NOTE:
