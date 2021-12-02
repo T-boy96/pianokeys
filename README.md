@@ -15,5 +15,5 @@ Simple javascript keyboard piano using Tone.js
 
 ### Plans:
 
--make changes in appearance
--make optional sound effects
+- make changes in appearance
+- make optional sound effects
