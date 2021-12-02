@@ -2,7 +2,7 @@
 
 ![thumbnail](./thumbnail.png)
 
-Simple javascript keyboard piano using Tone.js
+Simple javascript keyboard piano using Tone.js v14.7.77
 ## References
 
 - Tone js installation guide at: https://github.com/Tonejs/Tone.js
