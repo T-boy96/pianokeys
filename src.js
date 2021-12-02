@@ -48,12 +48,6 @@ function lshift(){
     generateKeys(MIN,MAX);
 }
 
-function actionSound(note_pressed,MIDI){
-    Tone.loaded().then(() => {
-        
-    })
-}
-
 function actionKeydownDisplay(note_pressed){
     var note = $(note_pressed);
     if(note.classList.contains('black')){
@@ -82,7 +76,6 @@ function actionKeyupDisplay(note_pressed){
     }
     
 }
-
 
 function generateKeys(MIN, MAX) {
     w = 0;
@@ -172,12 +165,19 @@ function initVariables() {
         53,55,58,60,62,
         65,67,70,72,74,
         77,79,82,84,86];
-    whiteBetweenBlacks = [6, 11, 13, 18, 23, 25, 30, 35, 37, 42, 47, 49, 54, 59, 61, 66, 71, 73, 78, 83, 85];
+    whiteBetweenBlacks = [6, 11, 13, 18, 23, 25, 
+        30, 35, 37, 42, 47, 
+        49, 54, 59, 61, 66, 
+        71, 73, 78, 83, 85];
     
     let wwb = document.createElement('div');
     let wB = document.createElement('div');
+    wwb.setAttribute('class','whiteWithBlacks');
     wwb.setAttribute('id','whiteWithBlacks');
+
+    wB.setAttribute('class','whiteBottom');
     wB.setAttribute('id','whiteBottom');
+    
     $('piano').appendChild(wwb);
     $('piano').appendChild(wB);
     
@@ -195,6 +195,8 @@ function initVariables() {
 }
 
 window.onload = function(){
+    const synth = new Tone.Synth().toDestination();
+    
     const MIDI = new Tone.Sampler({
         urls: {
             "C1": "24.mp3",
@@ -222,49 +224,49 @@ window.onload = function(){
     initVariables();
     generateNotes();
     generateKeys(MIN, MAX);
-
+   
+    let an = '';            // 'attack note'   ->  note (that will make sound)
+    let pns = new Set();    // 'prev notes'    ->  previous attack notes (that have been making sound)
+    let rn = '';            // 'release note'  ->  note that is making sound and will be released
     
-    var time_dist = Tone.now();
-    var keyup_time = time_dist;
-    let note_before = '';
-    body.addEventListener('keydown', e => {
-        if(e.keyCode === 37) lshift();
-        else if(e.keyCode === 39) rshift();
+    body.addEventListener('keydown', e=>{
+        // TODO switch effects (piano,synth,etc...) 
 
-        else if ($(e.key) !== null) {
-            let note_pressed = $(e.key).parentElement.id;
+        let k = e.keyCode;
+        switch(k) {
+            // ←  →
+            case 37:
+                //console.log(e.key);
+                pns = new Set();
+                lshift();
+                break;
+            case 39:
+                //console.log(e.key);
+                pns = new Set();
+                rshift();
+                break;
+        }
 
-            if ( note_before === note_pressed && (Tone.now() - keyup_time) > (Tone.now() - time_dist)) {
+        if($(e.key) !== null){
+            an = $(e.key).parentElement.id;            
+            if(pns.has(an)){
+                e.preventDefault();
                 return;
-            }else if ( note_before === note_pressed && (Tone.now() - keyup_time) < (Tone.now() - time_dist)){
-                    Tone.loaded().then(() =>{
-                        MIDI.triggerAttackRelease([note_pressed], 2);
-                        actionKeydownDisplay(note_pressed);
-                        time_dist = Tone.now();
-                        note_before = note_pressed;
-                    });
-            } else if(note_before !== note_pressed) {
-                Tone.loaded().then(() =>{
-                    MIDI.triggerAttackRelease([note_pressed], 2);
-                    actionKeydownDisplay(note_pressed);
-                });
-                time_dist = Tone.now();
-                note_before = note_pressed;
             }
+            Tone.loaded().then(()=>{
+                MIDI.triggerAttack(an);
+                actionKeydownDisplay(an);
+                pns.add(an);
+            });
         }
-    });
+    },false);
 
-
-    body.addEventListener('keyup',e => {
-        if ($(e.key) !== null){
-            keyup_time = Tone.now();
-            let note_pressed = $(e.key).parentElement.id;
-            actionKeyupDisplay(note_pressed);
+    body.addEventListener('keyup', e=>{
+        if($(e.key) != null){
+            rn = $(e.key).parentElement.id;
+            MIDI.triggerRelease(rn);
+            actionKeyupDisplay(rn);
+            pns.delete(rn);
         }
-    });
-    
-    body.addEventListener('click', e=> {
-        if (e.target.id === 'shiftl') lshift();
-        else if(e.target.id === 'shiftr') rshift();
-    });
+    },false);
 }
