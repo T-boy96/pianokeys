@@ -16,7 +16,7 @@ Simple javascript keyboard piano using Tone.js v14.7.77
 
 ### TODO:
 
-- make it more user friendly
+- make it more user friendly (buttons, Caps-Lock, etc...)
 - make changes in appearance
 - make optional sound effects
 - make a sustain
