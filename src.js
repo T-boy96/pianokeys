@@ -196,7 +196,6 @@ function initVariables() {
 
 window.onload = function(){
     const synth = new Tone.Synth().toDestination();
-    
     const MIDI = new Tone.Sampler({
         urls: {
             "C1": "24.mp3",
